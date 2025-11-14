@@ -10,19 +10,22 @@ import {
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { CouponService, ValidateCouponDto, ApplyCouponDto } from './coupon.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
-import { User } from '../../entities/user.entity';
+import { User, UserRole } from '../../entities/user.entity';
 import { ValidateCouponDto as ValidateCouponDtoClass } from './dto/validate-coupon.dto';
 import { RecommendCouponDto } from './dto/recommend-coupon.dto';
 
 @ApiTags('coupons')
 @ApiBearerAuth('JWT-auth')
 @Controller('coupons')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class CouponController {
   constructor(private readonly couponService: CouponService) {}
 
   @Get('available')
+  @Roles(UserRole.CUSTOMER)
   @ApiOperation({ summary: 'Get all available coupons for current user' })
   @ApiResponse({ status: 200, description: 'List of available coupons' })
   async getAvailableCoupons(@CurrentUser() user: User) {
@@ -30,6 +33,7 @@ export class CouponController {
   }
 
   @Post(':code/validate')
+  @Roles(UserRole.CUSTOMER)
   @ApiOperation({ summary: 'Validate if coupon is valid for cart' })
   @ApiParam({ name: 'code', description: 'Coupon code', example: 'FIRST50' })
   @ApiResponse({ status: 200, description: 'Coupon validation result' })
@@ -49,6 +53,7 @@ export class CouponController {
   }
 
   @Post(':code/apply')
+  @Roles(UserRole.CUSTOMER)
   @ApiOperation({ summary: 'Apply coupon to cart/order' })
   @ApiParam({ name: 'code', description: 'Coupon code', example: 'FIRST50' })
   @ApiResponse({ status: 200, description: 'Coupon applied successfully' })
@@ -63,6 +68,7 @@ export class CouponController {
   }
 
   @Get('my-usage')
+  @Roles(UserRole.CUSTOMER)
   @ApiOperation({ summary: 'Get user coupon usage history' })
   @ApiResponse({ status: 200, description: 'List of coupon usage history' })
   async getMyUsage(@CurrentUser() user: User) {
@@ -70,6 +76,7 @@ export class CouponController {
   }
 
   @Post('recommend')
+  @Roles(UserRole.CUSTOMER)
   @ApiOperation({ summary: 'Get recommended coupons based on cart' })
   @ApiResponse({
     status: 200,

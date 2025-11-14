@@ -30,6 +30,7 @@ export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
   @Post('coupons')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Create a new coupon' })
   @ApiResponse({ status: 201, description: 'Coupon created successfully' })
   @ApiResponse({ status: 400, description: 'Invalid coupon data' })
@@ -43,6 +44,7 @@ export class AdminController {
   }
 
   @Get('coupons')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get all coupons with optional filters' })
   @ApiQuery({ name: 'isActive', required: false, type: Boolean })
   @ApiQuery({ name: 'discountType', required: false })
@@ -65,6 +67,7 @@ export class AdminController {
   }
 
   @Get('coupons/:id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get coupon by ID' })
   @ApiParam({ name: 'id', description: 'Coupon ID' })
   @ApiResponse({ status: 200, description: 'Coupon details' })
@@ -74,6 +77,7 @@ export class AdminController {
   }
 
   @Put('coupons/:id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Update coupon details' })
   @ApiParam({ name: 'id', description: 'Coupon ID' })
   @ApiResponse({ status: 200, description: 'Coupon updated successfully' })
@@ -83,6 +87,7 @@ export class AdminController {
   }
 
   @Patch('coupons/:id/toggle-status')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Toggle coupon active status' })
   @ApiParam({ name: 'id', description: 'Coupon ID' })
   @ApiResponse({ status: 200, description: 'Coupon status toggled' })
@@ -91,6 +96,7 @@ export class AdminController {
   }
 
   @Delete('coupons/:id')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Delete coupon (soft delete)' })
   @ApiParam({ name: 'id', description: 'Coupon ID' })
   @ApiResponse({ status: 200, description: 'Coupon deleted successfully' })
@@ -100,6 +106,7 @@ export class AdminController {
   }
 
   @Get('coupons/:id/analytics')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get coupon performance analytics' })
   @ApiParam({ name: 'id', description: 'Coupon ID' })
   @ApiResponse({ status: 200, description: 'Coupon analytics data' })
@@ -108,6 +115,7 @@ export class AdminController {
   }
 
   @Get('reports/coupon-usage')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get coupon usage report with date filters' })
   @ApiQuery({ name: 'startDate', required: false, type: String })
   @ApiQuery({ name: 'endDate', required: false, type: String })
@@ -127,6 +135,7 @@ export class AdminController {
   }
 
   @Get('reports/top-coupons')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get top used coupons' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Number of top coupons to return', example: 10 })
   @ApiResponse({ status: 200, description: 'Top coupons list' })
@@ -135,6 +144,7 @@ export class AdminController {
   }
 
   @Get('reports/revenue-impact')
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Get revenue impact report' })
   @ApiQuery({ name: 'startDate', required: false, type: String })
   @ApiQuery({ name: 'endDate', required: false, type: String })
