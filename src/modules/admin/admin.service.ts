@@ -40,7 +40,25 @@ export class AdminService {
     }
 
     // Validate date range
-    if (createCouponDto.startDate >= createCouponDto.endDate) {
+    const now = new Date();
+    now.setHours(0, 0, 0, 0); // Reset time to compare dates only
+    
+    const startDate = new Date(createCouponDto.startDate);
+    startDate.setHours(0, 0, 0, 0);
+    const endDate = new Date(createCouponDto.endDate);
+    endDate.setHours(0, 0, 0, 0);
+    
+    // Check if start date is in the past
+    if (startDate < now) {
+      throw new BadRequestException('Start date must be today or a future date');
+    }
+    
+    // Check if end date is in the past
+    if (endDate < now) {
+      throw new BadRequestException('End date must be today or a future date');
+    }
+    
+    if (startDate >= endDate) {
       throw new BadRequestException('Start date must be before end date');
     }
 
@@ -163,8 +181,31 @@ export class AdminService {
     const coupon = await this.findOne(id);
 
     // Validate date range if dates are being updated
-    if (updateCouponDto.startDate && updateCouponDto.endDate) {
-      if (updateCouponDto.startDate >= updateCouponDto.endDate) {
+    if (updateCouponDto.startDate || updateCouponDto.endDate) {
+      const now = new Date();
+      now.setHours(0, 0, 0, 0); // Reset time to compare dates only
+      
+      const startDate = updateCouponDto.startDate 
+        ? new Date(updateCouponDto.startDate)
+        : new Date(coupon.startDate);
+      startDate.setHours(0, 0, 0, 0);
+      
+      const endDate = updateCouponDto.endDate
+        ? new Date(updateCouponDto.endDate)
+        : new Date(coupon.endDate);
+      endDate.setHours(0, 0, 0, 0);
+      
+      // Check if start date is in the past
+      if (startDate < now) {
+        throw new BadRequestException('Start date must be today or a future date');
+      }
+      
+      // Check if end date is in the past
+      if (endDate < now) {
+        throw new BadRequestException('End date must be today or a future date');
+      }
+      
+      if (startDate >= endDate) {
         throw new BadRequestException('Start date must be before end date');
       }
     }
